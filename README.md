@@ -1,7 +1,7 @@
 jQuery.SuperSimpleDialog
 ========================
 
-I hate complex dialog libraries.
+A super simple dialog library for those who were fed up with the complex source code.
 
 
 ## Download
