@@ -67,7 +67,7 @@ function SSDialog (message) {
 
   this.$el = null;
   this.$cover = null;
-};
+}
 
 
 // Class Properties
@@ -97,7 +97,7 @@ $.extend(SSDialog, {
 
   // Author: https://github.com/epeli/underscore.string
   _escapeHTML: function(str) {
-    if (str == null) return '';
+    if (str === null) return '';
     var escapeChars = {
       "<": "lt",
       ">": "gt",
@@ -150,11 +150,11 @@ SSDialog.prototype._getButtonCount = function(){
 SSDialog.prototype._createElements = function(){
 
   var $el = $('<div>').addClass(SSDialog._createClassName());
-  var $message = $('<div>').addClass(SSDialog._createClassName("message"))
+  var $message = $('<div>').addClass(SSDialog._createClassName("message"));
   var $buttons = $('<ul>')
       .addClass(SSDialog._createClassName("buttons"))
       .addClass(SSDialog._createClassName("buttons", this._getButtonCount()))
-      .addClass(SSDialog._createClassName("buttons", "clearfix"))
+      .addClass(SSDialog._createClassName("buttons", "clearfix"));
   $el.append($message).append($buttons);
 
   var $cover = $('<div>').addClass(SSDialog._createClassName("cover"));
@@ -170,7 +170,7 @@ SSDialog.prototype._createElements = function(){
 SSDialog.prototype._getButtonDataList = function(){
   var list = [];
   $.each(this._buttons, function(notuse, v){ list.push(v); });
-  return list.sort(function(a, b){ return a.sortOrder - b.sortOrder });
+  return list.sort(function(a, b){ return a.sortOrder - b.sortOrder; });
 };
 
 SSDialog.prototype.preRender = function(){

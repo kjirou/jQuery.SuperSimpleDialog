@@ -91,7 +91,7 @@ describe("SSDialog Instance", function(){
     var elements = obj._createElements();
     $.each(elements, function(notuse, $el){
       expect($el).to.be.a($);
-    })
+    });
     expect(elements[0].find('*').length).to.greaterThan(1);
   });
 
