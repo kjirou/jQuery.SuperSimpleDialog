@@ -1,6 +1,8 @@
 ;(function($){
 
+
 if ($.ssdialog !== undefined) return;
+
 
 $.ssdialog = function(){};
 
@@ -19,7 +21,7 @@ $.ssdialog.createAlert = function(message, options){
 
 $.ssdialog.alert = function(/* arguments */){
   var dialog = $.ssdialog.createAlert.apply(arguments);
-  dialog.render();
+  dialog.preRender();
   return dialog.open();
 };
 
@@ -38,7 +40,7 @@ $.ssdialog.createConfirm = function(message, options){
 
 $.ssdialog.confirm = function(/* arguments */){
   var dialog = $.ssdialog.createConfirm.apply(arguments);
-  dialog.render();
+  dialog.preRender();
   return dialog.open();
 };
 
@@ -56,16 +58,22 @@ function SSDialog (message) {
   this._deferred = $.Deferred();
 
   this.$el = null;
+  this.$cover = null;
 };
 
 
 SSDialog.CSS_CLASS_NAME_PREFIX = "ssdialog";
 
+
+SSDialog._isJQuery = function(obj){
+  return obj instanceof $ && obj.jquery !== undefined;
+};
+
 // e.g. ({x:1, y:2}) -> ["x", "y"]
 SSDialog._keys = function(obj){
   var k, keys = [];
   for (k in obj) {
-    if (obj.hasOwnProperty(k)) keys.push = k;
+    if (obj.hasOwnProperty(k)) keys.push(k);
   }
   return keys;
 };
@@ -80,16 +88,8 @@ SSDialog._createClassName = function(/* arguments */){
 
 SSDialog.prototype.addButton = function(buttonId, label, callback){
 
-  // Default button action
   if (callback === undefined) {
-    callback = function(data){
-      var self = data.self;
-      var buttonData = data.buttonData;
-      self.$el.hide(function(){
-        self.$el.remove();
-        self._deferred.resolve(buttonData.buttonId);
-      });
-    }
+    callback = this._createDefaultCallback();
   }
 
   this._buttons[buttonId] = {
@@ -124,25 +124,48 @@ SSDialog.prototype._createElement = function(){
   return $el;
 };
 
-SSDialog.prototype.render = function(){
+SSDialog.prototype._createCoverElement = function(){
+  return $('<div>').addClass(SSDialog._createClassName("cover"));
+};
+
+SSDialog.prototype._getButtonDataList = function(){
+  var list = [];
+  $.each(this._buttons, function(notuse, v){ list.push(v); });
+  return list.sort(function(a, b){ return a.sortOrder - b.sortOrder });
+};
+
+SSDialog.prototype.preRender = function(){
 
   this.$el = this._createElement().hide();
+  this.$cover = this._createCoverElement().hide();
 
   var self = this;
-  var $buttons = this.$el.find("buttons:first");
+
+  // Add message
+  var $messageContainer = this.$el.find(
+    '.' + SSDialog._createClassName("message"));
+  if (SSDialog._isJQuery(this._message)) {
+    $messageContainer.append(this._message);
+  } else {
+    $messageContainer.text(this._message);
+  }
+
+  // Add buttons
+  var $buttons = this.$el.find(
+    '.' + SSDialog._createClassName("buttons"));
   $.each(this._buttons, function(buttonId, buttonData){
     $buttons.append(
       $('<li>')
         .addClass(SSDialog._createClassName("button"))
         .addClass(SSDialog._createClassName("button", buttonId))
         .text(buttonData.label)
-        .data("buttonId", buttonId)
         .on("mousedown", function(){
-          buttonData.callback({ self:self });
+          self.triggerButtonEvent(buttonId);
         })
     );
   });
 
+  $(document.body).append(this.$cover);
   $(document.body).append(this.$el);
 };
 
@@ -151,18 +174,33 @@ SSDialog.prototype.getPromise = function(){
 };
 
 SSDialog.prototype.open = function(){
-  this.$el.show();  // @TODO Add animation
+  // @TODO Add animation / Use CSS animation
+  this.$cover.show();
+  this.$el.show();
   return this.getPromise();
 };
 
-SSDialog.prototype.close = function(buttonId){
-  buttonId = buttonId || null;
-  var self = this;
-  this.$el.hide(function(){  // @TODO Add animation
-    this.remove();
-    self._deferred.resolve(buttonId);
+SSDialog.prototype.triggerButtonEvent = function(buttonId){
+  var buttonData = this._buttons[buttonId];
+  buttonData.callback({
+    self: this,
+    buttonData: buttonData
   });
-  return this.getPromise();
 };
+
+// @TODO
+// 閉じるアニメーションを類型化して選択可能にする
+// その際、デフォルトはJSによるアニメーションにするが
+// CSSアニメが使えるならそちらを使うことも出来るようにする
+SSDialog.prototype._createDefaultCallback = function(){
+  return function(data){
+    var self = data.self;
+    var buttonData = data.buttonData;
+    self.$cover.remove();
+    self.$el.remove();
+    self._deferred.resolve(buttonData.buttonId);
+  };
+};
+
 
 })(jQuery);

@@ -21,6 +21,7 @@
     "grunt-notify": "*",
     "grunt-testem": "*",
     "grunt-text-replace": "*",
+    "underscore": "*",
     "mocha": "*",
     "expect.js": "*",
     "sinon": "*",
