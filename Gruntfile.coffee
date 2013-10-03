@@ -16,7 +16,7 @@ module.exports = (grunt) ->
 
     constants:
       js:
-        src: 'jquery.ssdialog.js'
+        src: 'js/jquery.ssdialog.js'
         test: 'development/assets/mocha-tests.js'
       jqueries: [
         'assets/jquery-1.10.2.min.js'
@@ -27,7 +27,7 @@ module.exports = (grunt) ->
       index: 'development/index.html'
       builded:
         js:
-          minified: 'jquery.ssdialog.min.js'
+          minified: 'js/jquery.ssdialog.min.js'
         jq_test_runners: [
           'development/jquery-1.10.2.html'
           'development/jquery-1.9.1.html'
@@ -116,7 +116,7 @@ module.exports = (grunt) ->
           '<%= constants.builded.js.minified %>': '<%= constants.js.src %>'
 
 
-  # Task sets
+  # Task series
   grunt.registerTask 'testall', [
     'clean:0'
     'copy:jq_test_runners:0'
@@ -149,6 +149,7 @@ module.exports = (grunt) ->
     'uglify:production'
   ]
 
+
   # Aliases
   grunt.registerTask 'test', 'testem:main'
 
@@ -156,3 +157,4 @@ module.exports = (grunt) ->
   # Shortcuts
   grunt.registerTask 'default', 'test'
   grunt.registerTask 'h', 'jshint'
+  grunt.registerTask 't', 'test'
