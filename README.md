@@ -8,6 +8,8 @@ A super simple dialog library for those who were fed up with the complex source 
 
 - [Stable production version](https://raw.github.com/kjirou/jQuery.SuperSimpleDialog/master/js/jquery.ssdialog.min.js)
 - [Stable development version](https://raw.github.com/kjirou/jQuery.SuperSimpleDialog/master/js/jquery.ssdialog.js)
+- [Core CSS](https://raw.github.com/kjirou/jQuery.SuperSimpleDialog/master/css/jquery.ssdialog.css)
+- [Theme CSS example](https://raw.github.com/kjirou/jQuery.SuperSimpleDialog/master/css/themes/jquery.ssdialog.example.css)
 - [Old releases](https://github.com/kjirou/jQuery.SuperSimpleDialog/releases)
 
 Or, if you can use `bower`:
