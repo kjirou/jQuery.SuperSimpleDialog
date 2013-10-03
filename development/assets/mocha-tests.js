@@ -3,15 +3,17 @@
 
 describe("$.ssdialog Properties", function(){
   it("Plugin definition", function(){
-    expect($.ssdialog).to.be.a("function");
+    expect($.ssdialog).to.be.a("object");
   });
 
   it("VERSION", function(){
     expect($.ssdialog.VERSION).to.match(/^\d+\.\d+.\d+(?:\.\d+)?$/);
   });
 
-  it("getClass", function(){
-    expect($.ssdialog.getClass()).to.be.a("function");
+  it("getClass / create", function(){
+    var SSDialog = $.ssdialog.getClass();
+    expect(SSDialog).to.be.a("function");
+    expect($.ssdialog.create("Message")).to.be.a(SSDialog);
   });
 });
 
@@ -33,6 +35,14 @@ describe("SSDialog Class", function(){
     expect(SSDialog._createClassName("foo", "bar")).to.be("ssdialog-foo-bar");
   });
 
+  it("_escapeHTML", function(){
+    expect(SSDialog._escapeHTML("<>\"&'")).to.be("&lt;&gt;&quot;&amp;&apos;");
+  });
+
+  it("_nl2br", function(){
+    expect(SSDialog._nl2br("Hello\nWorld")).to.be('Hello<br style="letter-spacing:0;" />World');
+  });
+
 });
 
 
@@ -41,8 +51,8 @@ describe("SSDialog Instance", function(){
   var SSDialog = $.ssdialog.getClass();
 
   afterEach(function(){
-    $(document.body).find('.' + SSDialog._createClassName());
-    $(document.body).find('.' + SSDialog._createClassName("cover"));
+    $(document.body).find('.' + SSDialog._createClassName()).remove();
+    $(document.body).find('.' + SSDialog._createClassName("cover")).remove();
   });
 
 
@@ -76,18 +86,29 @@ describe("SSDialog Instance", function(){
     expect(dataList[2].buttonId).to.be("a");
   });
 
-  it("_createElement", function(){
+  it("_createElements", function(){
     var obj = new SSDialog("Message");
-    expect(obj._createElement().find('*').length).to.greaterThan(1);
-  });
-
-  it("_createCoverElement", function(){
-    var obj = new SSDialog("Message");
-    expect(obj._createCoverElement()).to.be.a($);
+    var elements = obj._createElements();
+    $.each(elements, function(notuse, $el){
+      expect($el).to.be.a($);
+    })
+    expect(elements[0].find('*').length).to.greaterThan(1);
   });
 
   it("preRender", function(){
     var obj = new SSDialog("Message");
+    obj.addButton("ok", "OK_DESU");
+    obj.addButton("cancel", "CANCEL_DESU");
+    obj.preRender();
+
+    var dialogClassName = SSDialog._createClassName();
+    var coverClassName = SSDialog._createClassName("cover");
+    expect($(document.body).find('.' + dialogClassName)).to.have.length(1);
+    expect($(document.body).find('.' + coverClassName)).to.have.length(1);
+
+    var html = obj.$el.html();
+    expect(html).to.match(/OK_DESU/);
+    expect(html).to.match(/CANCEL_DESU/);
   });
 });
 

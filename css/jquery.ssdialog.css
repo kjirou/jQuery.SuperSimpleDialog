@@ -1,0 +1,43 @@
+.ssdialog {
+  margin: 0;
+  padding: 0;
+  z-index: 999999;
+}
+
+.ssdialog-cover {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  z-index: 999998;
+}
+
+.ssdialog-buttons {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  list-style: none;
+}
+
+/* http://nicolasgallagher.com/micro-clearfix-hack/ */
+.ssdialog-buttons-clearfix:before,
+.ssdialog-buttons-clearfix:after {
+  content: " "; /* 1 */
+  display: table; /* 2 */
+}
+.ssdialog-buttons-clearfix:after {
+  clear: both;
+}
+.ssdialog-buttons-clearfix {
+  *zoom: 1;
+}
+
+.ssdialog-button {
+  display: block;
+  float: left;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  cursor: pointer;
+}

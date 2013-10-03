@@ -4,49 +4,57 @@
 if ($.ssdialog !== undefined) return;
 
 
-$.ssdialog = function(){};
+//
+// User's API
+//
+$.ssdialog = {
 
-$.ssdialog.VERSION = "0.0.1";
+  "VERSION": "0.0.1",
 
-$.ssdialog.createAlert = function(message, options){
+  "getClass": function(){ return SSDialog; },
 
-  var opts = $.extend({
-    okLabel: "OK"
-  }, options || {});
+  "create": function(message){
+    return new SSDialog(message);
+  },
 
-  var dialog = new SSDialog(message);
-  dialog.addButton("ok", opts.cancelLabel);
-  return dialog;
+  "alert": function(/* arguments */){
+    return this.createAlert.apply(this, arguments).open();
+  },
+
+  "createAlert": function(message, options){
+    var opts = $.extend({
+      okLabel: "OK"
+    }, options || {});
+
+    var dialog = new SSDialog(message);
+    dialog.addButton("ok", opts.okLabel);
+    dialog.preRender();
+    return dialog;
+  },
+
+  "confirm": function(/* arguments */){
+    return this.createConfirm.apply(this, arguments).open();
+  },
+
+  "createConfirm": function(message, options){
+    var opts = $.extend({
+      okLabel: "OK",
+      cancelLabel: "Cancel"
+    }, options || {});
+
+    var dialog = new SSDialog(message);
+    dialog.addButton("cancel", opts.cancelLabel);
+    dialog.addButton("ok", opts.okLabel);
+    dialog.preRender();
+    return dialog;
+  }
+
 };
 
-$.ssdialog.alert = function(/* arguments */){
-  var dialog = $.ssdialog.createAlert.apply(arguments);
-  dialog.preRender();
-  return dialog.open();
-};
 
-$.ssdialog.createConfirm = function(message, options){
-
-  var opts = $.extend({
-    okLabel: "OK",
-    cancelLabel: "CANCEL"
-  }, options || {});
-
-  var dialog = new SSDialog(message);
-  dialog.addButton("cancel", opts.cancelLabel);
-  dialog.addButton("ok", opts.okLabel);
-  return dialog;
-};
-
-$.ssdialog.confirm = function(/* arguments */){
-  var dialog = $.ssdialog.createConfirm.apply(arguments);
-  dialog.preRender();
-  return dialog.open();
-};
-
-$.ssdialog.getClass = function(){ return SSDialog; };
-
-
+//
+// SSDialog Class
+//
 function SSDialog (message) {
 
   // string or jQuery object
@@ -62,30 +70,52 @@ function SSDialog (message) {
 };
 
 
-SSDialog.CSS_CLASS_NAME_PREFIX = "ssdialog";
+// Class Properties
+$.extend(SSDialog, {
 
+  CSS_CLASS_NAME_PREFIX: "ssdialog",
 
-SSDialog._isJQuery = function(obj){
-  return obj instanceof $ && obj.jquery !== undefined;
-};
+  _isJQuery: function(obj){
+    return obj instanceof $ && obj.jquery !== undefined;
+  },
 
-// e.g. ({x:1, y:2}) -> ["x", "y"]
-SSDialog._keys = function(obj){
-  var k, keys = [];
-  for (k in obj) {
-    if (obj.hasOwnProperty(k)) keys.push(k);
+  // e.g. ({x:1, y:2}) -> ["x", "y"]
+  _keys: function(obj){
+    var k, keys = [];
+    for (k in obj) {
+      if (obj.hasOwnProperty(k)) keys.push(k);
+    }
+    return keys;
+  },
+
+  // e.g. ("foo", "bar") -> "ssdialog-foo-bar"
+  _createClassName: function(/* arguments */){
+    var classNames = Array.prototype.slice.apply(arguments);
+    classNames.unshift(this.CSS_CLASS_NAME_PREFIX);
+    return classNames.join("-");
+  },
+
+  // Author: https://github.com/epeli/underscore.string
+  _escapeHTML: function(str) {
+    if (str == null) return '';
+    var escapeChars = {
+      "<": "lt",
+      ">": "gt",
+      "\"": "quot",
+      "&": "amp",
+      "'": "apos"
+    };
+    return String(str).replace(/[&<>"']/g, function(m){ return '&' + escapeChars[m] + ';'; });
+  },
+
+  _nl2br: function(str){
+    return str.replace(/(?:\r\n|\n|\r)/g, '<br style="letter-spacing:0;" />');
   }
-  return keys;
-};
 
-// e.g. ("foo", "bar") -> "ssdialog-foo-bar"
-SSDialog._createClassName = function(/* arguments */){
-  var classNames = Array.prototype.slice.apply(arguments);
-  classNames.unshift(this.CSS_CLASS_NAME_PREFIX);
-  return classNames.join("-");
-};
+});
 
 
+// Instance Properties
 SSDialog.prototype.addButton = function(buttonId, label, callback){
 
   if (callback === undefined) {
@@ -96,8 +126,12 @@ SSDialog.prototype.addButton = function(buttonId, label, callback){
     buttonId: buttonId,
     label: label,
     callback: callback,
-    sortOrder: SSDialog._keys(this._buttons).length
+    sortOrder: this._getButtonCount()
   };
+};
+
+SSDialog.prototype._getButtonCount = function(){
+  return SSDialog._keys(this._buttons).length;
 };
 
 //
@@ -113,19 +147,24 @@ SSDialog.prototype.addButton = function(buttonId, label, callback){
 //     </ul>
 //   </div>
 //
-SSDialog.prototype._createElement = function(){
-  var $el = $('<div>').addClass(SSDialog._createClassName());
-  $el.append(
-    $('<div>').addClass(SSDialog._createClassName("message"))
-  );
-  $el.append(
-    $('<ul>').addClass(SSDialog._createClassName("buttons"))
-  );
-  return $el;
-};
+SSDialog.prototype._createElements = function(){
 
-SSDialog.prototype._createCoverElement = function(){
-  return $('<div>').addClass(SSDialog._createClassName("cover"));
+  var $el = $('<div>').addClass(SSDialog._createClassName());
+  var $message = $('<div>').addClass(SSDialog._createClassName("message"))
+  var $buttons = $('<ul>')
+      .addClass(SSDialog._createClassName("buttons"))
+      .addClass(SSDialog._createClassName("buttons", this._getButtonCount()))
+      .addClass(SSDialog._createClassName("buttons", "clearfix"))
+  $el.append($message).append($buttons);
+
+  var $cover = $('<div>').addClass(SSDialog._createClassName("cover"));
+
+  return [
+    $el,
+    $message,
+    $buttons,
+    $cover
+  ];
 };
 
 SSDialog.prototype._getButtonDataList = function(){
@@ -136,23 +175,27 @@ SSDialog.prototype._getButtonDataList = function(){
 
 SSDialog.prototype.preRender = function(){
 
-  this.$el = this._createElement().hide();
-  this.$cover = this._createCoverElement().hide();
+  var elements = this._createElements();
+  var $el = elements[0].hide();
+  var $message = elements[1];
+  var $buttons = elements[2];
+  var $cover = elements[3].hide();
 
   var self = this;
 
   // Add message
-  var $messageContainer = this.$el.find(
-    '.' + SSDialog._createClassName("message"));
   if (SSDialog._isJQuery(this._message)) {
-    $messageContainer.append(this._message);
+    $message.append(this._message);
   } else {
-    $messageContainer.text(this._message);
+    // e.g. "a<br>b\nc" -> "a&lt;br&gt;b<br>c"
+    $message.html(
+      SSDialog._nl2br(
+        SSDialog._escapeHTML(this._message)
+      )
+    );
   }
 
   // Add buttons
-  var $buttons = this.$el.find(
-    '.' + SSDialog._createClassName("buttons"));
   $.each(this._buttons, function(buttonId, buttonData){
     $buttons.append(
       $('<li>')
@@ -165,8 +208,11 @@ SSDialog.prototype.preRender = function(){
     );
   });
 
-  $(document.body).append(this.$cover);
-  $(document.body).append(this.$el);
+  $(document.body).append($cover);
+  $(document.body).append($el);
+
+  this.$el = $el;
+  this.$cover = $cover;
 };
 
 SSDialog.prototype.getPromise = function(){
