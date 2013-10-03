@@ -1,0 +1,37 @@
+{
+    "name": "ssdialog",
+    "title": "jQuery.SuperSimpleDialog",
+    "description": "A super simple dialog library for those who were fed up with the complex source code",
+    "keywords": [
+        "dialog",
+        "alert",
+        "confirm",
+        "confimation",
+        "ui"
+    ],
+    "version": "0.0.1",
+    "author": {
+        "name": "kjirou",
+        "url": "http://blog.kjirou.net/"
+    },
+    "maintainers": [
+        {
+            "name": "kjirou",
+            "email": "sorenariblog@gmail.com",
+            "url": "http://blog.kjirou.net/"
+        }
+    ],
+    "licenses": [
+        {
+            "type": "MIT License",
+            "url": "https://github.com/kjirou/jQuery.SuperSimpleDialog/blob/master/LICENSE"
+        }
+    ],
+    "bugs": "https://github.com/kjirou/jQuery.SuperSimpleDialog/issues",
+    "homepage": "https://github.com/kjirou/jQuery.SuperSimpleDialog",
+    "docs": "https://github.com/kjirou/jQuery.SuperSimpleDialog",
+    "download": "https://github.com/kjirou/jQuery.SuperSimpleDialog/archive/master.zip",
+    "dependencies": {
+        "jquery": ">=1.8"
+    }
+}

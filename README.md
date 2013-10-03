@@ -1,4 +1,4 @@
-jQuery.SuperSimpleDialog
+jQuery.SuperSimpleDialog [![Build Status](https://travis-ci.org/kjirou/jQuery.SuperSimpleDialog.png?branch=master)](https://travis-ci.org/kjirou/jQuery.SuperSimpleDialog)
 ========================
 
 A super simple dialog library for those who were fed up with the complex source code.
