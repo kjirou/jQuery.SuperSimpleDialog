@@ -18,6 +18,15 @@ $ bower install jQuery.SuperSimpleDialog
 ```
 
 
+## Installation
+
+```
+<link rel="stylesheet" href="jquery.ssdialog.css"></link>
+<link rel="stylesheet" href="jquery.ssdialog.example.css"></link>
+<script src="jquery.ssdialog.js"></script>
+```
+
+
 ## Supported browsers
 
 - `IE10`, `IE9`, `IE8`, `IE7`
@@ -34,15 +43,6 @@ $ bower install jQuery.SuperSimpleDialog
 - `1.9.1`
 - `1.8.3`
 - `2.0.3`
-
-
-## Installation
-
-```
-<link rel="stylesheet" href="css/jquery.ssdialog.css"></link>
-<link rel="stylesheet" href="css/themes/jquery.ssdialog.example.css"></link>
-<script src="js/jquery.ssdialog.js"></script>
-```
 
 
 ## Example
