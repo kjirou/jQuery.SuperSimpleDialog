@@ -12,7 +12,7 @@ A super simple dialog library for those who were fed up with the complex source 
 
 Or, if you can use `bower`:
 ```
-$ bower install jquery.ssdialog
+$ bower install jQuery.SuperSimpleDialog
 ```
 
 
@@ -90,7 +90,8 @@ function openMySuperAlert(){
   // Get more low-level object
   var dialog = $.ssdialog.create("Message");
 
-  // Button settings, ("buttonId", "label", callback(default=Close action))
+  // Button settings
+  //   addButton("buttonId", "label", [callback(default is close action)])
   // For example, you set 5 buttons, you have not closed one of them
   dialog.addButton("ok", "OK");
   dialog.addButton("yes", "YES");
