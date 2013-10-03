@@ -147,3 +147,5 @@ $ npm install
 
 
 ## Related Links
+
+- [The jQuery Plugin Registry - jQuery.SuperSimpleDialog](http://plugins.jquery.com/ssdialog/)
