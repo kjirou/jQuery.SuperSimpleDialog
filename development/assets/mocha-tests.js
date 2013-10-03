@@ -113,4 +113,76 @@ describe("SSDialog Instance", function(){
 });
 
 
+describe("Show alert", function(){
+
+  it("Open alert, after that close it", function(){
+
+    // Create and append
+    var obj = $.ssdialog.createAlert("Kurumi Erika");
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(false);
+    expect($(document.body).find(".ssdialog-cover").is(":visible")).to.be(false);
+
+    // Open
+    obj.open();
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(true);
+    expect($(document.body).find(".ssdialog-cover").is(":visible")).to.be(true);
+
+    // Search message
+    expect($(document.body).html()).to.match(/Erika/);
+
+    // Close
+    var promise = obj.getPromise();
+    promise.then(function(buttonId){
+      expect(buttonId).to.be("ok");
+    });
+    obj.triggerButtonEvent("ok");
+    expect($(document.body).find(".ssdialog")).to.have.length(0);
+  });
+
+  it("Add message by jQuery object", function(){
+    var $m = $('<div id="chiflet">シフレ</div>');
+    var obj = $.ssdialog.createAlert($m, { okLabel:"ですぅ" });
+    obj.open();
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(true);
+    expect($(document.body).html()).to.match(/シフレ/);
+    expect($(document.body).html()).to.match(/ですぅ/);
+    obj.triggerButtonEvent("ok");
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(false);
+  });
+
+  it("Close by jQuery event", function(){
+    var promise = $.ssdialog.alert("コフレ");
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(true);
+    $(document.body).find(".ssdialog-button-ok").trigger("mousedown");
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(false);
+  });
+});
+
+
+describe("Show confirm", function(){
+
+  it("Open confirm, after that close it", function(){
+
+    // Create and append
+    var obj = $.ssdialog.createConfirm("Hanasaki Tsubomi");
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(false);
+
+    // Open
+    obj.open();
+    expect($(document.body).find(".ssdialog").is(":visible")).to.be(true);
+
+    // Search message
+    expect($(document.body).html()).to.match(/Tsubomi/);
+
+    // Close
+    var promise = obj.getPromise();
+    promise.then(function(buttonId){
+      expect(buttonId).to.be("cancel");
+    });
+    obj.triggerButtonEvent("cancel");
+    expect($(document.body).find(".ssdialog")).to.have.length(0);
+  });
+});
+
+
 }());
