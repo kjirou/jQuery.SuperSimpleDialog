@@ -128,9 +128,9 @@ $.extend(SSDialog.prototype, {
     };
 
     // Animation of hiding dialog, default is no-animation:
-    // `buttonData` is clicked button data.
+    // `buttonId` is clicked button ID.
     // It is necessary to return deferred object.
-    this._hiding = function(buttonData){
+    this._hiding = function(buttonId){
       this.$dialog.remove();
       this.$cover.remove();
       return $.Deferred().resolve();
@@ -253,13 +253,13 @@ $.extend(SSDialog.prototype, {
     var self = this;
     var buttonData = this._buttons[buttonId];
     var callback = buttonData.callback || this.close;
-    callback.apply(this, [buttonData]);
+    callback.apply(this, [buttonId]);
   },
 
-  close: function(buttonData){
+  close: function(buttonId){
     var self = this;
-    this._hiding(buttonData).then(function(){
-      self._deferred.resolve(buttonData.buttonId);
+    this._hiding(buttonId).then(function(){
+      self._deferred.resolve(buttonId);
     });
   }
 });
