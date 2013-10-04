@@ -55,18 +55,8 @@ $.ssdialog = {
 //
 // SSDialog Class
 //
-function SSDialog (message) {
-
-  // string or jQuery object
-  this._message = message;
-
-  this._buttons = {};
-
-  // Resolve at close dialog
-  this._deferred = $.Deferred();
-
-  this.$dialog = null;
-  this.$cover = null;
+function SSDialog (/* arguments */) {
+  this._initialize.apply(this, arguments);
 }
 
 
@@ -118,11 +108,40 @@ $.extend(SSDialog, {
 // Instance Properties
 $.extend(SSDialog.prototype, {
 
-  addButton: function(buttonId, label, callback){
+  _initialize: function(message){
 
-    if (callback === undefined) {
-      callback = this._createDefaultCallback();
-    }
+    // string or jQuery object
+    this._message = message;
+
+    this._buttons = {};
+
+    // Resolve at close dialog
+    this._deferred = $.Deferred();
+
+    this.$dialog = null;
+    this.$cover = null;
+
+    // Animation of showing dialog, default is no-animation
+    this._showing = function(){
+      this.$cover.show();
+      this.$dialog.show();
+    };
+
+    // Animation of hiding dialog, default is no-animation:
+    // `buttonData` is clicked button data.
+    // It is necessary to return deferred object.
+    this._hiding = function(buttonData){
+      this.$dialog.remove();
+      this.$cover.remove();
+      return $.Deferred().resolve();
+    };
+  },
+
+  // buttonId is string
+  // label is string
+  // callback is function or default=undefined
+  addButton: function(buttonId, label, callback){
+    callback = callback || null;
 
     this._buttons[buttonId] = {
       buttonId: buttonId,
@@ -131,6 +150,10 @@ $.extend(SSDialog.prototype, {
       sortOrder: this._getButtonCount()
     };
   },
+
+  setShowing: function(v){ this._showing = v; },
+
+  setHiding: function(v){ this._hiding = v; },
 
   _getButtonCount: function(){
     return SSDialog._keys(this._buttons).length;
@@ -222,27 +245,22 @@ $.extend(SSDialog.prototype, {
   },
 
   open: function(){
-    this.$cover.show();
-    this.$dialog.show();
+    this._showing();
     return this.getPromise();
   },
 
   triggerButtonEvent: function(buttonId){
+    var self = this;
     var buttonData = this._buttons[buttonId];
-    buttonData.callback({
-      self: this,
-      buttonData: buttonData
-    });
+    var callback = buttonData.callback || this.close;
+    callback.apply(this, [buttonData]);
   },
 
-  _createDefaultCallback: function(){
-    return function(data){
-      var self = data.self;
-      var buttonData = data.buttonData;
-      self.$cover.remove();
-      self.$dialog.remove();
+  close: function(buttonData){
+    var self = this;
+    this._hiding(buttonData).then(function(){
       self._deferred.resolve(buttonData.buttonId);
-    };
+    });
   }
 });
 
