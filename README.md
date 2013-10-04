@@ -100,7 +100,6 @@ $.ssdialog.alert("Hi!", {
 
 Customize dialog:
 ```
-// Customize dialog
 function openMyAlert(){
 
   // Get low-level object
@@ -143,8 +142,10 @@ function openMySuperAlert(){
 }
 ```
 
+Supplements:
+
 - As for appearance, it can be adjusted by using CSS almost.
-- There is no animation now, sorry.
+- There are now no design themes and animations presets, sorry.
 
 
 ## Development
