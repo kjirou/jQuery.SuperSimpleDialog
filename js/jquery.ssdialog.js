@@ -23,10 +23,14 @@ $.ssdialog = {
 
   "createAlert": function(message, options){
     var opts = $.extend({
-      okLabel: "OK"
+      okLabel: "OK",
+      showing: null,
+      hiding: null
     }, options || {});
 
     var dialog = new SSDialog(message);
+    if (opts.showing) dialog.setShowing(opts.showing);
+    if (opts.hiding) dialog.setHiding(opts.hiding);
     dialog.addButton("ok", opts.okLabel);
     dialog.preRender();
     return dialog;
@@ -39,10 +43,14 @@ $.ssdialog = {
   "createConfirm": function(message, options){
     var opts = $.extend({
       okLabel: "OK",
-      cancelLabel: "Cancel"
+      cancelLabel: "Cancel",
+      showing: null,
+      hiding: null
     }, options || {});
 
     var dialog = new SSDialog(message);
+    if (opts.showing) dialog.setShowing(opts.showing);
+    if (opts.hiding) dialog.setHiding(opts.hiding);
     dialog.addButton("cancel", opts.cancelLabel);
     dialog.addButton("ok", opts.okLabel);
     dialog.preRender();

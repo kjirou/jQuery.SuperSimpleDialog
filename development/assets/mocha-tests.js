@@ -185,4 +185,54 @@ describe("Show confirm", function(){
 });
 
 
+describe("Animations", function(){
+
+  it("Apply jQuery.fadeIn/fadeOut to alert", function(done){
+    var obj = $.ssdialog.createAlert("Hi", {
+      showing: function(){
+        this.$cover.show();
+        this.$dialog.fadeIn(1);
+      },
+      hiding: function(){
+        var self = this,
+          dfd = $.Deferred();
+        this.$dialog.fadeOut(1, function(){
+          self.$cover.hide();
+          dfd.resolve();
+        });
+        return dfd.promise();
+      }
+    });
+    obj.open().then(function(buttonId){
+      expect(buttonId).to.be("ok");
+      done();
+    });
+    obj.close("ok");
+  });
+
+  it("Apply jQuery.fadeIn/fadeOut to confirm", function(done){
+    var obj = $.ssdialog.createConfirm("Hi", {
+      showing: function(){
+        this.$cover.show();
+        this.$dialog.fadeIn(1);
+      },
+      hiding: function(){
+        var self = this,
+          dfd = $.Deferred();
+        this.$dialog.fadeOut(1, function(){
+          self.$cover.hide();
+          dfd.resolve();
+        });
+        return dfd.promise();
+      }
+    });
+    obj.open().then(function(buttonId){
+      expect(buttonId).to.be("cancel");
+      done();
+    });
+    obj.close("cancel");
+  });
+});
+
+
 }());
