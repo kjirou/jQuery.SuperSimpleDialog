@@ -89,8 +89,8 @@ describe("SSDialog Instance", function(){
   it("_createElements", function(){
     var obj = new SSDialog("Message");
     var elements = obj._createElements();
-    $.each(elements, function(notuse, $el){
-      expect($el).to.be.a($);
+    $.each(elements, function(notuse, $dialog){
+      expect($dialog).to.be.a($);
     });
     expect(elements[0].find('*').length).to.greaterThan(1);
   });
@@ -106,7 +106,7 @@ describe("SSDialog Instance", function(){
     expect($(document.body).find('.' + dialogClassName)).to.have.length(1);
     expect($(document.body).find('.' + coverClassName)).to.have.length(1);
 
-    var html = obj.$el.html();
+    var html = obj.$dialog.html();
     expect(html).to.match(/OK_DESU/);
     expect(html).to.match(/CANCEL_DESU/);
   });

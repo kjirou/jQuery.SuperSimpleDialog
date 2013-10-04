@@ -65,7 +65,7 @@ function SSDialog (message) {
   // Resolve at close dialog
   this._deferred = $.Deferred();
 
-  this.$el = null;
+  this.$dialog = null;
   this.$cover = null;
 }
 
@@ -151,18 +151,18 @@ $.extend(SSDialog.prototype, {
   //
   _createElements: function(){
 
-    var $el = $('<div>').addClass(SSDialog._createClassName());
+    var $dialog = $('<div>').addClass(SSDialog._createClassName());
     var $message = $('<div>').addClass(SSDialog._createClassName("message"));
     var $buttons = $('<ul>')
         .addClass(SSDialog._createClassName("buttons"))
         .addClass(SSDialog._createClassName("buttons", this._getButtonCount()))
         .addClass(SSDialog._createClassName("buttons", "clearfix"));
-    $el.append($message).append($buttons);
+    $dialog.append($message).append($buttons);
 
     var $cover = $('<div>').addClass(SSDialog._createClassName("cover"));
 
     return [
-      $el,
+      $dialog,
       $message,
       $buttons,
       $cover
@@ -178,7 +178,7 @@ $.extend(SSDialog.prototype, {
   preRender: function(){
 
     var elements = this._createElements();
-    var $el = elements[0].hide();
+    var $dialog = elements[0].hide();
     var $message = elements[1];
     var $buttons = elements[2];
     var $cover = elements[3].hide();
@@ -211,9 +211,9 @@ $.extend(SSDialog.prototype, {
     });
 
     $(document.body).append($cover);
-    $(document.body).append($el);
+    $(document.body).append($dialog);
 
-    this.$el = $el;
+    this.$dialog = $dialog;
     this.$cover = $cover;
   },
 
@@ -223,7 +223,7 @@ $.extend(SSDialog.prototype, {
 
   open: function(){
     this.$cover.show();
-    this.$el.show();
+    this.$dialog.show();
     return this.getPromise();
   },
 
@@ -240,7 +240,7 @@ $.extend(SSDialog.prototype, {
       var self = data.self;
       var buttonData = data.buttonData;
       self.$cover.remove();
-      self.$el.remove();
+      self.$dialog.remove();
       self._deferred.resolve(buttonData.buttonId);
     };
   }

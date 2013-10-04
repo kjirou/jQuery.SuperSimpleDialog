@@ -79,7 +79,7 @@ function openMyAlert(){
   var dialog = $.ssdialog.createAlert("Message");
 
   // It has references to some elements
-  dialog.$el.addClass("myalert");
+  dialog.$dialog.addClass("myalert");
   dialog.$cover.addClas("myalert-cover");
 
   // Show dialog with return promise object
