@@ -47,6 +47,7 @@ $ bower install jQuery.SuperSimpleDialog
 
 ## Example
 
+Simply use:
 ```
 // Show alert
 $.ssdialog.alert("Hi!");
@@ -71,7 +72,34 @@ $.ssdialog.confirm("Are you OK?").then(function(buttonId){
 
 // The message can be passed in two forms "string" and jQuery object
 $.ssdialog.alert($("<div>Hi!</div>"));
+```
 
+Can attach animation:
+```
+$.ssdialog.alert("Hi!", {
+
+  // Can be shown in any way you like you
+  showing: function(){
+    this.$cover.show();
+    this.$dialog.fadeIn();
+  },
+
+  // It is necessary to return deferred.promise()
+  hiding: function(){
+    var self = this,
+      dfd = $.Deferred();
+    this.$dialog.fadeOut(function(){
+      self.$cover.hide();
+      dfd.resolve();
+    });
+    return dfd.promise();
+  }
+
+});
+```
+
+Customize dialog:
+```
 // Customize dialog
 function openMyAlert(){
 
@@ -85,8 +113,10 @@ function openMyAlert(){
   // Show dialog with return promise object
   return dialog.open();
 }
+```
 
-// More customizing
+More customizing:
+```
 function openMySuperAlert(){
 
   // Get more low-level object
@@ -94,15 +124,16 @@ function openMySuperAlert(){
 
   // Button settings
   //   addButton("buttonId", "label", [callback(default is close action)])
-  // For example, you set 5 buttons, you have not closed one of them
+  // For example, you set 4 buttons, you have not closed one of them
   dialog.addButton("ok", "OK");
   dialog.addButton("yes", "YES");
-  dialog.addButton("of_course", "Of course!");
   dialog.addButton("sure", "Sure!!");
-  dialog.addButton("no", "No", function(data){
-    alert("Why?");
-    // Some useful info contains
-    console.log(data);
+  dialog.addButton("no", "No", function(buttonId){
+
+    console.log("Said something?");
+
+    // Write like the following if you want to close manually in this callback
+    //this.close(buttonId);
   });
 
   // Render HTML
